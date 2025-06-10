@@ -392,6 +392,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="animationContainer" class="coin-animation-container">
         <div id="coin-bgn" class="coin"></div>
@@ -595,11 +596,9 @@
             document.documentElement.style.setProperty('--eur-input-bg-color', settings.eurInputBgColor);
             document.documentElement.style.setProperty('--settings-label-color', settings.settingsLabelColor);
             document.documentElement.style.setProperty('--container-margin-top', settings.containerMarginTop + 'vh');
-
             // Apply text color to currency labels
             levLabel.style.color = settings.levTextColor;
             eurLabel.style.color = settings.eurTextColor;
-
             // Apply text color to clear buttons
             clearButtons.forEach(button => {
                 const targetId = button.dataset.target;
@@ -609,7 +608,6 @@
                     button.style.color = settings.eurTextColor;
                 }
             });
-
             // Update settings modal inputs
             bgColorInput.value = settings.bgColor;
             containerBgColorInput.value = settings.containerBgColor;
@@ -621,7 +619,6 @@
             settingsLabelColorInput.value = settings.settingsLabelColor;
             containerMarginTopInput.value = settings.containerMarginTop;
             updateColorPreviews(); // Актуализираме визуализациите
-
             // Set initial focus based on default active field, without triggering copy
             if (settings.defaultActiveField === 'lev') {
                 levInput.focus();
@@ -681,15 +678,12 @@
         function adjustFontSize(inputElement) {
             const THEORETICAL_MAX_FONT_SIZE = 48; // Трябва да съответства на базовия CSS font-size за полетата
             const minAllowedFontSize = 14; // Minimum font size to prevent illegibility
-
             // Започваме с прилагане на най-големия желан размер на шрифта
             inputElement.style.fontSize = THEORETICAL_MAX_FONT_SIZE + 'px';
-
             // clientWidth е вътрешната ширина на елемента, включваща padding.
             // scrollWidth е ширината на съдържанието на елемента (включително невидимото поради преливане), също включваща padding.
             // Ако scrollWidth > clientWidth, съдържанието (с padding) е по-широко от видимата вътрешна област (с padding), което означава преливане.
             const clientWidth = inputElement.clientWidth;
-
             // Ако елементът не е рендиран или няма реална ширина,
             // и има съдържание, връщаме към минималния размер на шрифта.
             // Ако няма съдържание, цикълът по-долу няма да се изпълни, ако scrollWidth е 0.
@@ -697,9 +691,7 @@
                 inputElement.style.fontSize = minAllowedFontSize + 'px'; // Fallback
                 return;
             }
-
             let currentFontSize = THEORETICAL_MAX_FONT_SIZE;
-
             // Намаляваме размера на шрифта, ако съдържанието (плюс padding) прелива clientWidth
             while (inputElement.scrollWidth > clientWidth && currentFontSize > minAllowedFontSize) {
                 currentFontSize--;
@@ -763,7 +755,6 @@
             // Премахваме input.select() и свързаната логика за readOnly,
             // за да не се появява стандартното меню за копиране на мобилни устройства.
             // Копирането в клипборда също се премахва, тъй като беше обвързано с избирането.
-
             adjustFontSize(input);
         }
 
@@ -783,7 +774,6 @@
         function clearInput(targetId) {
             const targetInput = document.getElementById(targetId);
             targetInput.value = '';
-
             if (targetId === 'levInput') {
                 eurInput.value = '';
             } else {
@@ -805,19 +795,15 @@
                 adjustFontSize(eurInput);
                 return;
             }
-
             recallIndex = (recallIndex + 1) % history.length;
             const entry = history[recallIndex];
-
             // Parse the entry: "XXX,XX лв. = YY,YY €"
             const parts = entry.split(' = ');
             if (parts.length === 2) {
                 const levPart = parts[0].replace(' лв.', '');
                 const eurPart = parts[1].replace(' €', '');
-
                 levInput.value = levPart;
                 eurInput.value = eurPart;
-
                 adjustFontSize(levInput); // Adjust font size after recall
                 adjustFontSize(eurInput); // Adjust font size after recall
             }
@@ -844,21 +830,17 @@
             if (!coinBgn || !coinEur) return;
             const animationContainer = document.getElementById('animationContainer');
             if (!animationContainer) return;
-
             // Забележка: Анимацията за въртене (@keyframes spin-cw/ccw) беше премахната по-рано.
             // Текущата анимация на движение се управлява от CSS transition върху 'transform' свойството.
-
             // Изчакваме кратко, за да се гарантира, че елементите са рендирани и имат размери.
             setTimeout(() => {
                 const containerWidth = animationContainer.clientWidth;
                 const coinWidth = 100; // Ширината на монетата, както е дефинирана в CSS (.coin)
-
                 // Движим BGN монетата към центъра (малко преди него, за да се припокрие)
                 // Изчисляваме необходимата транслация, така че левият край на BGN монетата
                 // и левият край на EUR монетата (след нейната транслация) да се срещнат в центъра.
                 // Позицията, до която трябва да стигне левият край на всяка монета, е (containerWidth - coinWidth) / 2.
                 const translationX = (containerWidth - coinWidth) / 2;
-
                 coinBgn.style.transform = `translateX(${translationX}px)`;
                 // Движим EUR монетата към центъра (малко преди него, за да се припокрие)
                 // EUR монетата е позиционирана с 'right: 0', така че нейната транслация трябва да е отрицателна.
@@ -872,12 +854,15 @@
         bgColorInput.addEventListener('input', () => {
             document.documentElement.style.setProperty('--bg-color', bgColorInput.value);
         });
+
         containerBgColorInput.addEventListener('input', () => {
             document.documentElement.style.setProperty('--container-bg-color', containerBgColorInput.value);
         });
+
         settingsLabelColorInput.addEventListener('input', () => {
             document.documentElement.style.setProperty('--settings-label-color', settingsLabelColorInput.value);
         });
+
         containerMarginTopInput.addEventListener('input', () => {
             document.documentElement.style.setProperty('--container-margin-top', containerMarginTopInput.value + 'vh');
         });
@@ -892,16 +877,12 @@
         document.addEventListener('DOMContentLoaded', () => {
             const currentSettings = loadSettings();
             applySettings(currentSettings); // This also sets initial focus
-
             loadHistory();
-
             // Initial font size adjustment for both fields based on their (potentially empty) content
             adjustFontSize(levInput);
             adjustFontSize(eurInput);
-
             // Стартираме анимацията на монетите при зареждане
             startCoinAnimation();
-
             // Добавяме event listener към контейнера на анимацията за рестартиране при клик
             const animationContainerElement = document.getElementById('animationContainer');
             if (animationContainerElement) {
@@ -910,21 +891,17 @@
                         // 1. Временно премахваме transition-а, за да "щракнат" монетите в начална позиция
                         coinBgn.style.transition = 'none';
                         coinEur.style.transition = 'none';
-
                         // 2. Нулираме позициите
                         coinBgn.style.transform = 'translateX(0px)';
                         coinEur.style.transform = 'translateX(0px)';
-
                         // 3. Форсираме reflow, за да се приложат промените без transition
                         // Четенето на offsetHeight е често използван трик за това
                         void coinBgn.offsetHeight;
                         void coinEur.offsetHeight;
-
                         // 4. Възстановяваме transition-а, като премахваме inline стила,
                         // така че CSS правилото от класа .coin отново да е активно
                         coinBgn.style.removeProperty('transition');
                         coinEur.style.removeProperty('transition');
-
                         // 5. Рестартираме анимацията
                         startCoinAnimation();
                     }
@@ -937,16 +914,12 @@
             const inputField = event.target;
             const originalValue = inputField.value;
             const originalCursorPos = inputField.selectionStart;
-            
             // Проверяваме дали потребителят е въвел десетичен разделител
             const justEnteredSeparator = originalValue.endsWith(',') || originalValue.endsWith('.');
-            
             handleInput(event); // Почиства въведената стойност
-
             let valueAfterSanitize = inputField.value;
             let num = parseNumber(valueAfterSanitize);
             let newFormattedValue = '';
-
             if (valueAfterSanitize === "") {
                 newFormattedValue = "";
             } else if (justEnteredSeparator) {
@@ -964,9 +937,7 @@
             } else {
                 newFormattedValue = "";
             }
-            
             inputField.value = newFormattedValue;
-            
             // Позициониране на курсора:
             if (justEnteredSeparator && newFormattedValue.includes(',')) {
                 // Позиционираме курсора след запетаята
@@ -975,7 +946,6 @@
             } else {
                 // За други случаи опитваме да запазим относителната позиция на курсора
                 let targetPos;
-                
                 if (newFormattedValue.length === 0) {
                     targetPos = 0;
                 } else if (originalCursorPos <= newFormattedValue.length) {
@@ -983,10 +953,8 @@
                 } else {
                     targetPos = newFormattedValue.length;
                 }
-                
                 inputField.setSelectionRange(targetPos, targetPos);
             }
-            
             convertFromLevToEur(); // Динамично конвертиране
         });
 
@@ -994,16 +962,12 @@
             const inputField = event.target;
             const originalValue = inputField.value;
             const originalCursorPos = inputField.selectionStart;
-            
             // Проверяваме дали потребителят е въвел десетичен разделител
             const justEnteredSeparator = originalValue.endsWith(',') || originalValue.endsWith('.');
-            
             handleInput(event); // Почиства въведената стойност
-
             let valueAfterSanitize = inputField.value;
             let num = parseNumber(valueAfterSanitize);
             let newFormattedValue = '';
-
             if (valueAfterSanitize === "") {
                 newFormattedValue = "";
             } else if (justEnteredSeparator) {
@@ -1021,9 +985,7 @@
             } else {
                 newFormattedValue = "";
             }
-            
             inputField.value = newFormattedValue;
-            
             // Позициониране на курсора:
             if (justEnteredSeparator && newFormattedValue.includes(',')) {
                 // Позиционираме курсора след запетаята
@@ -1032,7 +994,6 @@
             } else {
                 // За други случаи опитваме да запазим относителната позиция на курсора
                 let targetPos;
-                
                 if (newFormattedValue.length === 0) {
                     targetPos = 0;
                 } else if (originalCursorPos <= newFormattedValue.length) {
@@ -1043,7 +1004,6 @@
                 
                 inputField.setSelectionRange(targetPos, targetPos);
             }
-            
             convertFromEurToLev(); // Динамично конвертиране
         }); 
 
@@ -1084,7 +1044,6 @@
         settingsButton.addEventListener('click', () => {
             // Load current settings into the modal before opening
             const savedSettings = loadSettings(); // За настройки, които не се обновяват на живо, и за стойности по подразбиране
-
             // За цветовете с динамичен предварителен преглед, взимаме текущо приложените стойности
             const computedStyle = getComputedStyle(document.documentElement);
             const currentAppliedBgColor = computedStyle.getPropertyValue('--bg-color').trim();
@@ -1092,10 +1051,8 @@
             const currentAppliedContainerMarginTopRaw = computedStyle.getPropertyValue('--container-margin-top').trim();
             const currentAppliedContainerMarginTopVH = currentAppliedContainerMarginTopRaw.endsWith('vh') ? currentAppliedContainerMarginTopRaw.slice(0, -2) : savedSettings.containerMarginTop;
             const currentAppliedSettingsLabelColor = computedStyle.getPropertyValue('--settings-label-color').trim();
-
             bgColorInput.value = currentAppliedBgColor || savedSettings.bgColor;
             containerBgColorInput.value = currentAppliedContainerBgColor || savedSettings.containerBgColor;
-
             // За останалите настройки използваме запазените/стандартните стойности
             levTextColorInput.value = savedSettings.levTextColor;
             eurTextColorInput.value = savedSettings.eurTextColor;
