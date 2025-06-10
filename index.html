@@ -6,15 +6,15 @@
     <title>Евро конвертор</title>
     <style>
         :root {
-            --bg-color: #f0f0f0;
-            --lev-text-color: #3498db;
-            --eur-text-color: #27ae60;
+            --bg-color: #e0f7fa; /* Светло ментово зелено */
+            --lev-text-color: #00acc1; /* Ярко тюркоазено */
+            --eur-text-color: #ec407a; /* Ярко розово */
             --border-color: #ccc;            
             --modal-bg-color: transparent; /* Премахваме замъгляването */
-            --lev-input-bg-color: #fff; /* Default Lev input background */
-            --eur-input-bg-color: #fff; /* Default Eur input background */
-            --container-bg-color: #ffffff; /* Default converter container background */
-            --settings-label-color: #555; /* Default settings label color */
+            --lev-input-bg-color: #e0f2f1; /* Много светло тюркоазено */
+            --eur-input-bg-color: #fce4ec; /* Много светло розово */
+            --container-bg-color: #fffde7; /* Много светло жълто/крем */
+            --settings-label-color: #7e57c2; /* Средно лилаво */
             --container-margin-top: 5vh; /* Default container margin-top */
             --modal-content-bg: #fff;
         }
@@ -482,10 +482,6 @@
                 <label for="settingsLabelColor">Шрифт на етикети:</label>
                 <input type="color" id="settingsLabelColor" style="justify-self: start;">
 
-                <!-- Информативно поле за обменен курс -->
-                <label>Обменен курс (BGN/EUR):</label>
-                <span id="exchangeRateDisplay" style="justify-self: start; align-self: center; color: var(--settings-label-color);">1.95583</span>
-
                 <!-- Настройка за отстояние на контейнера -->
                 <label for="containerMarginTop">Отместване отгоре (vh):</label>
                 <input type="number" id="containerMarginTop" min="0" max="50" step="1" style="width: 40px; padding-left: 5px;">
@@ -543,14 +539,14 @@
         let recallIndex = -1; // -1 means no recall started, 0 is the last item
 
         const defaultSettings = {
-            bgColor: '#f0f0f0',
-            containerBgColor: '#ffffff',
-            levTextColor: '#3498db',
-            eurTextColor: '#27ae60',
-            levInputBgColor: '#ffffff', // Default white background for Lev input
-            eurInputBgColor: '#ffffff', // Default white background for Eur input
+            bgColor: '#e0f7fa',
+            containerBgColor: '#fffde7',
+            levTextColor: '#00acc1',
+            eurTextColor: '#ec407a',
+            levInputBgColor: '#e0f2f1',
+            eurInputBgColor: '#fce4ec',
             defaultActiveField: 'lev',
-            settingsLabelColor: '#555555',
+            settingsLabelColor: '#7e57c2',
             containerMarginTop: '5' // Стойността е в vh, но се съхранява като стринг
         };
 
