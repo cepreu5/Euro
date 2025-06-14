@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Calculator</title>
+    <style>
+    
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            /*background-image: url('calculator.png');*/
+            background-size: contain;
+            background-color: #BFB8B4;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+      .calculator-container {
+          display: flex;
+          align-items: flex-end; /* Позиционира по вертикала */
+          justify-content: center; /* Центрира хоризонтално */
+          position: relative;
+          width: 100%;
+          max-width: 100%;
+          height: 100vh; /* Прави контейнера толкова висок, колкото е екранът */
+          padding-bottom: 70px; /* Задава отстояние отдолу */
+      }
+
+      .calculator-img {
+          width: 100%;
+          max-width: 450px;
+        display: block;
+      }
+
+.calculator-displayyy {
+    position: absolute;
+        left: 18%;   /* процент от ширината на контейнера */
+        color: white;
+        text-align: right; /* за калкулаторен вид */
+        background: rgba(255,255,255,0); /* лек фон за четимост */
+        border: none;
+        border-radius: 5px;
+        padding: 0 8px;
+    width: 67%;
+    height: 9%;
+    margin-top: auto; /* Това гарантира, че дисплеят запазва позицията си */
+}
+
+      .calculator-display {
+        position: absolute;
+        top: 20%;    /* процент от височината на контейнера */
+        left: 18%;   /* процент от ширината на контейнера */
+        width: 67%;  /* ширината на дисплея като процент от контейнера */
+        height: 9%; /* височината на дисплея */
+        //font-size: 8cqh;
+        color: white;
+        text-align: right; /* за калкулаторен вид */
+        background: rgba(255,255,255,0); /* лек фон за четимост */
+        border: none;
+        border-radius: 5px;
+        padding: 0 8px;
+      }        
+
+      .calculator-display-lv {
+        position: absolute;
+        top: 9%;    /* процент от височината на контейнера */
+        left: 18%;   /* процент от ширината на контейнера */
+        width: 67%;  /* ширината на дисплея като процент от контейнера */
+        height: 9%; /* височината на дисплея */
+        //font-size: 8cqh;
+        color: white;
+        text-align: right; /* за калкулаторен вид */
+        background: rgba(255,255,255,0); /* лек фон за четимост */
+        border: none;
+        border-radius: 5px;
+        padding: 0 8px;
+      }
+  </style>
+</head>
+<!--body style="background-image: url('calcula....tor.png');"-->
+<body>
+  <div class="calculator-container">
+    <img src="calculator.png" class="calculator-img" alt="Калкулатор">
+    <input type="text" id="display" class="calculator-display">
+    <input type="text" id="display-lv" class="calculator-display-lv">
+  </div>
+
+    <!--div class="display" id="display"></div-->
+        
+    <script>
+        var screenWidth = window.innerWidth;
+        var StartingPoint = { x: 0, y: 0 }; // Начална точка за изчисленията
+        var imageWidth, imageHeight;
+        var imageWidthO, imageHeightO, aspectRatioG;
+        const rows = 5;
+        const cols = 4;
+        ConstX = 45;
+        ConstY = 199;
+        const keyWidthS = 97;
+        const keyHeightS = 83;
+        const keyGapS = 25;
+
+        const container = document.querySelector('.calculator-container');
+        const display = document.querySelector('.calculator-display');
+        const displaylv = document.querySelector('.calculator-display-lv');
+        function resizeFont() {
+          const height = container.offsetHeight;
+          display.style.fontSize = (height * 0.08) + 'px'; // 8% от височината
+          displaylv.style.fontSize = (height * 0.08) + 'px'; // 8% от височината
+        }
+
+function getBackgroundImageSize() {
+    let image = document.querySelector(".calculator-img"); // Избира изображението
+    
+    if (image) {
+        console.log("Извлечен път:", image.src); // Проверка в конзолата
+        
+        // Извличане на размерите директно
+        console.log("Ширина на изображението:", image.naturalWidth);
+        console.log("Височина на изображението:", image.naturalHeight);
+        
+        imageWidthO = image.naturalWidth;
+        imageHeightO = image.naturalHeight;
+    } else {
+        console.log("Изображението не е намерено!");
+    }
+    //StartingPoint.x = ConstX * aspectRatioG + (containerWidth - imageWidth) / 2;
+    //StartingPoint.y = ConstY * (imageHeight / image.naturalHeight) + (containerHeight - imageHeight) / 2;
+
+}
+/*
+function getBackgroundImageVisualSize() {
+    let image = document.querySelector(".calculator-img"); // Избира изображението
+    let containerWidth = document.body.clientWidth;
+    let containerHeight = document.body.clientHeight;
+    if (!image) {
+        console.error("Грешка: Не е намерено изображението.");
+        return;
+    }
+    // Вземаме оригиналния размер на изображението
+    let aspectRatio = image.naturalWidth / image.naturalHeight;
+    if (image.style.objectFit === "cover") {
+        // При "cover" изображението запълва контейнера
+        imageWidth = containerWidth;
+        imageHeight = containerHeight;
+    } else if (image.style.objectFit === "contain") {
+        // При "contain" изображението се мащабира, но остава видимо цялото
+        if (containerWidth / containerHeight > aspectRatio) {
+            imageHeight = containerHeight;
+            imageWidth = Math.round(containerHeight * aspectRatio);
+        } else {
+            imageWidth = containerWidth;
+            imageHeight = Math.round(containerWidth / aspectRatio);
+        }
+    } else {
+        // Ако размерът е зададен в пиксели или проценти
+        imageWidth = image.width;
+        imageHeight = image.height;
+    }
+    console.log("Визуален размер на изображението: W:", imageWidth, " x H:", imageHeight);
+    // Актуализиране на StartingPoint
+    aspectRatioG = imageWidth / image.naturalWidth;
+    StartingPoint.x = ConstX * aspectRatioG + (window.innerWidth - imageWidth) / 2;
+    StartingPoint.y = ConstY * (imageHeight / image.naturalHeight) + (window.innerHeight - imageHeight) / 2;
+    console.log("StartingPoint.x = ", StartingPoint.x, "  StartingPoint.y = ", StartingPoint.y, "   aspectRatio = ", aspectRatioG);
+}
+*/
+function getBackgroundImageVisualSize() {
+    let image = document.querySelector(".calculator-img"); // Избира изображението
+    let containerWidth = document.body.clientWidth;
+    let containerHeight = document.body.clientHeight;
+    if (!image) {
+        console.error("Грешка: Не е намерено изображението.");
+        return;
+    }
+    let aspectRatio = image.naturalWidth / image.naturalHeight;
+    if (image.style.objectFit === "cover") {
+        imageWidth = containerWidth;
+        imageHeight = containerHeight;
+    } else if (image.style.objectFit === "contain") {
+        if (containerWidth / containerHeight > aspectRatio) {
+            imageHeight = containerHeight;
+            imageWidth = Math.round(containerHeight * aspectRatio);
+        } else {
+            imageWidth = containerWidth;
+            imageHeight = Math.round(containerWidth / aspectRatio);
+        }
+    } else {
+        imageWidth = image.width;
+        imageHeight = image.height;
+    }
+    console.log("Визуален размер на изображението: W:", imageWidth, " x H:", imageHeight);
+    // Заменяме window.innerWidth с containerWidth
+    aspectRatioG = imageWidth / image.naturalWidth;
+    aspectRatioH = imageHeight / image.naturalHeight;
+    //StartingPoint.x = StartingPoint.x * aspectRatioG;
+    //StartingPoint.y = StartingPoint.y * aspectRatioG;
+    
+    StartingPoint.x = ConstX * aspectRatioG + (containerWidth - imageWidth) / 2; // padding на изображението в canvas, предполага се равен двустранно
+    StartingPoint.y = ConstY * aspectRatioH + (containerHeight - imageHeight); // (imageHeight / image.naturalHeight)
+//StartingPoint.x = ConstX * (imageWidth / image.naturalWidth) + (containerWidth - imageWidth) / 2;
+//StartingPoint.y = ConstY * (imageHeight / image.naturalHeight) + (containerHeight - imageHeight) / 2;
+    console.log("StartingPoint.x = ", StartingPoint.x, "  StartingPoint.y = ", StartingPoint.y);
+    console.log("aspectRatioW = ", aspectRatioG, "   aspectRatioH = ", aspectRatioH);
+}
+
+/*        function getKeyCoordinates(imageWidth) {
+            const keyWidth = keyWidthS * aspectRatioG;
+            const keyHeight = keyHeightS * aspectRatioG;
+            let keys = [];
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    keys.push({
+                        x: StartingPoint.x + col * keyWidth,
+                        y: StartingPoint.y + row * keyHeight,
+                        width: keyWidth,
+                        height: keyHeight,
+                        value: getKeyValue(row, col)
+                    });
+                }
+            }
+            return keys;
+        }
+*/
+
+function getKeyCoordinates(imageWidth, imageHeight) {
+    let image = document.querySelector(".calculator-img");
+    if (!image) {
+        console.error("Грешка: Изображението не е дефинирано!");
+        return [];
+    }
+    const keyWidth = keyWidthS * aspectRatioG;
+    const keyHeight = keyHeightS * aspectRatioG;
+    let keys = [];
+    for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+            keys.push({
+                x: StartingPoint.x + col * keyWidth,
+                y: StartingPoint.y + row * keyHeight,
+                width: keyWidth,
+                height: keyHeight,
+                value: getKeyValue(row, col)
+            });
+        }
+    }
+    return keys;
+}
+
+        function placeKeys(keys) {
+            const container = document.body; // Или друг контейнер, ако има
+            keys.forEach(key => {
+                let keyElement = document.createElement("div");
+                // keyElement.textContent = key.value; // Показва стойността на клавиша
+                keyElement.style.position = "absolute";
+                keyElement.style.left = `${key.x}px`;
+                keyElement.style.top = `${key.y}px`;
+                // console.log(" X:", `${key.x}px`, " Y:", `${key.y}px`);
+                keyElement.style.width = "5px"; //`${key.width - keyGapS * aspectRatioG}px`; // 
+                keyElement.style.height = "5px"; //`${key.height - keyGapS * aspectRatioG}px`; // 
+                keyElement.style.backgroundColor = "rgba(255, 255, 255, 0.99)"; // "rgba(0, 0, 255, 0.5)"; // Полупрозрачен син фон
+                keyElement.style.color = "white";
+                keyElement.style.display = "flex";
+                keyElement.style.alignItems = "center";
+                keyElement.style.justifyContent = "center";
+                keyElement.style.borderRadius = "0px";
+                // keyElement.style.fontSize = `${key.width * 0.4}px`; // Динамичен размер на текста
+                container.appendChild(keyElement);
+            });
+        }
+
+        function getKeyValue(row, col) {
+            const keyMap = [
+                ["C", "€", "лв.", "%"],
+                ["7", "8", "9", "*"],
+                ["4", "5", "6", "/"],
+                ["1", "2", "3", "+"],
+                ["0", ".", "=", "+"]
+            ];
+            return keyMap[row][col];
+        }
+
+        document.addEventListener("click", function(event) {
+            const imageWidth = document.body.clientWidth;
+            const keys = getKeyCoordinates(imageWidth, imageHeight);
+            keys.forEach(key => {
+                if (event.clientX >= key.x && event.clientX <= key.x + key.width &&
+                    event.clientY >= key.y && event.clientY <= key.y + key.height) {
+                    appendNumber(key.value);
+                }
+            });
+        });
+
+        function appendNumber(value) {
+            const display = document.getElementById('display');
+            const displaylv = document.getElementById('display-lv');
+            if (value == "C") {display.value = ""; displaylv.value = "";}
+            display.value += value;
+            displaylv.value += value;
+            const keyss = getKeyCoordinates(imageWidth); // to show touch arrea
+            placeKeys(keyss);
+        }
+
+        // Извикване при зареждане на страницата
+        window.addEventListener("load", function (e) {
+          getBackgroundImageSize();
+          getBackgroundImageVisualSize();
+          resizeFont();
+        })
+
+        // Следене на преоразмеряването на прозореца
+        window.addEventListener("resize", function (e) {
+          getBackgroundImageVisualSize();
+          resizeFont();
+        })
+
+
+
+
+
+
+
+
+
+/*
+
+        .displayyyy {
+            width: 90%;
+            font-size: 2rem;
+            padding: 10px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            position: absolute;
+            top: 10%;
+        }
+
+      .calculator-containerrr {
+        justify-content: top;
+        position: relative;
+        width: 100%;
+        max-width: 100%; /400px;  или колкото е желаната ширина 
+        /aspect-ratio: 3/4; съобразете с пропорциите на изображението 
+      }
+
+        function getBackgroundImageSize() {
+            let computedStyle = window.getComputedStyle(document.body);
+            let imageSrc = computedStyle.backgroundImage;
+            // Премахване на 'url("...")' и извличане на реалния път
+            imageSrc = imageSrc.replace(/^url\(["']?|["']?\)$/g, '');
+            console.log("Извлечен път:", imageSrc); // Проверка в конзолата
+            let image = new Image();
+            image.src = imageSrc;
+            image.onload = function () {
+                console.log("Ширина на изображението:", image.width);
+                imageWidthO = image.width;
+                console.log("Височина на изображението:", image.height);
+                imageHeightO = image.height;
+            };
+        }
+*/
+
+/*
+        function getBackgroundImageVisualSize() {
+            let computedStyle = window.getComputedStyle(document.body);
+            let bgSize = computedStyle.backgroundSize.split(" ");
+            let containerWidth = document.body.clientWidth;
+            let containerHeight = document.body.clientHeight;
+            // Извличане на URL на изображението
+            let imageSrc = computedStyle.backgroundImage.replace(/^url\(["']?|["']?\)$/g, '').trim();
+            // Проверка дали URL е валиден
+            if (!imageSrc || imageSrc === "none") {
+                console.error("Грешка: Не е намерено фоново изображение.");
+                return;
+            }
+            let img = new Image();
+            img.src = imageSrc;
+            img.onload = function () {
+                let aspectRatio = img.width / img.height;
+                if (bgSize[0] === "cover") {
+                    // При "cover" изображението запълва контейнера
+                    imageWidth = containerWidth;
+                    imageHeight = containerHeight;
+                } else if (bgSize[0] === "contain") {
+                    // При "contain" изображението се мащабира, но остава видимо цялото
+                    if (containerWidth / containerHeight > aspectRatio) {
+                        imageHeight = containerHeight;
+                        imageWidth = Math.round(containerHeight * aspectRatio);
+                    } else {
+                        imageWidth = containerWidth;
+                        imageHeight = Math.round(containerWidth / aspectRatio);
+                    }
+                } else {
+                    // Ако е зададено в пиксели или проценти
+                    imageWidth = parseFloat(bgSize[0]) || img.width;
+                    imageHeight = parseFloat(bgSize[1]) || img.height;
+                }
+                console.log("Визуален размер на изображението: W:", imageWidth, " x H:", imageHeight);
+                // Актуализиране на StartingPoint
+                aspectRatioG = imageWidth/imageWidthO;
+                StartingPoint.x = ConstX * (imageWidth/imageWidthO) +(window.innerWidth - imageWidth) / 2;
+                StartingPoint.y = ConstY * (imageHeight/imageHeightO) +(window.innerHeight - imageHeight) / 2;
+                console.log("StartingPoint.x = ", StartingPoint.x, "  StartingPoint.y = ", StartingPoint.y, "   aspectRatio = ", aspectRatioG);
+            };
+            img.onerror = function () {
+                console.error("Грешка при зареждане на изображението:", imageSrc);
+            };
+        }         
+*/
+
+
+/*
+        function getBackgroundImageSize() {
+            let imageSrc = document.body.style.backgroundImage.replace(/url\(['"]?(.*?)['"]?\)/gi, '$1');
+            let image = new Image();
+            image.src = imageSrc;
+
+            image.onload = function () {
+                console.log("Ширина на изображението:", image.width);
+                console.log("Височина на изображението:", image.height);
+            };
+        }
+*/
+        /*function getBackgroundImageSize() {
+            let computedStyle = window.getComputedStyle(document.body);
+            console.log(computedStyle.backgroundImage);
+            let imageSrc = computedStyle.backgroundImage.replace(/url\\(['\"]?(.*?)['\"]?\\)/gi, '$1');
+            console.log(imageSrc);
+            
+            if (imageSrc && imageSrc !== "none") {
+                let image = new Image();
+                image.src = imageSrc;
+
+                image.onload = function () {
+                    console.log("Ширина на изображението:", image.width);
+                    console.log("Височина на изображението:", image.height);
+                };
+            } else {
+                console.log("Не е намерено изображение за фон.");
+            }
+        } */
+
+        /*
+        function getBackgroundImageSize() {
+            let computedStyle = window.getComputedStyle(document.body);
+            let imageSrc = computedStyle.backgroundImage;
+            // Премахване на 'url("...")' и извличане на реалния път
+            imageSrc = imageSrc.replace(/^url\(["']?|["']?\)$/g, '');
+            console.log("Извлечен път:", imageSrc); // Проверка в конзолата
+            let image = new Image();
+            image.src = imageSrc;
+            image.onload = function () {
+                console.log("Ширина на изображението:", image.width);
+                console.log("Височина на изображението:", image.height);
+            };
+        } */
+        // Следене на преоразмеряването на прозореца
+        // window.addEventListener("resize", getBackgroundImageSize);
+
+        // Извикване при зареждане на страницата
+        //window.onload = getBackgroundImageSize;
+
+        //window.addEventListener("resize", () => {
+        //    console.log("Нова ширина на екрана:", window.innerWidth);
+        //});
+        /*function getBackgroundImageVisualSize() {
+            let computedStyle = window.getComputedStyle(document.body);
+            let bgSize = computedStyle.backgroundSize.split(" ");
+            let containerWidth = document.body.clientWidth;
+            let containerHeight = document.body.clientHeight;
+            imageWidth = 0;
+            if (bgSize[0] === "cover") {
+                // При "cover" изображението запълва контейнера
+                imageWidth = containerWidth;
+                imageHeight = containerHeight;
+            } else if (bgSize[0] === "contain") {
+                // При "contain" изображението се мащабира, но остава видимо цялото
+                let img = new Image();
+                img.src = computedStyle.backgroundImage.replace(/^url\(["']?|["']?\)$/g, '');
+                img.onload = function () {
+                    let aspectRatio = img.width / img.height;
+                    if (containerWidth / containerHeight > aspectRatio) {
+                        imageHeight = containerHeight;
+                        // imageWidth = containerHeight * aspectRatio;
+                        imageWidth = Math.round(containerHeight * aspectRatio); // Закръгляне до най-близкото цяло число
+                    } else {
+                        imageWidth = containerWidth;
+                        imageHeight = Math.round(containerWidth / aspectRatio);
+                    }
+                    console.log("Визуален размер на изображението: W:", imageWidth, " x H:", imageHeight);
+                };
+            } else {
+                // Ако е зададено в пиксели или проценти
+                imageWidth = parseFloat(bgSize[0]);
+                imageHeight = parseFloat(bgSize[1]);
+            }
+            console.log("Нова ширина на екрана:", window.innerWidth, " W:", imageWidth);
+            StartingPoint.x = (window.innerWidth - imageWidth) / 2;
+        }*/
+
+    </script>
+</body>
+</html>
